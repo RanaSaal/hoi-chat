@@ -1,3 +1,4 @@
+torch
 tensorflow==2.19.0
 tf-keras
 transformers==4.35.2

@@ -65,7 +65,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-)
 # إخفاء الهيدر 
 hide_streamlit_style = """
         <style>

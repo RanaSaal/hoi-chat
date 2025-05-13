@@ -28,14 +28,20 @@ def set_background(image_path):
 set_background("static/background.png")
 
 # ---------- خطوط وتنسيقات ----------
+# ---------- خطوط وتنسيقات ----------
 st.markdown(
     """
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
     html, body, [class*="css"]  {
-        font-family: 'Tajawal', sans-serif;
-        color: #000000;
+        font-family: 'Tajawal', sans-serif !important;
+        color: #000000 !important;
     }
+
+    input, label, textarea, .stTextInput, .stRadio, .stButton, .stMarkdown, .stSelectbox {
+        color: #000000 !important;
+    }
+
     .title-small {
         font-size: 28px;
         text-align: center;
@@ -57,6 +63,8 @@ st.markdown(
     </style>
     """,
     unsafe_allow_html=True
+)
+
 )
 # إخفاء الهيدر 
 hide_streamlit_style = """

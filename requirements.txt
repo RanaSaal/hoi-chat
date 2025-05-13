@@ -1,7 +1,7 @@
-torch
 tensorflow==2.19.0
 tf-keras
 transformers==4.35.2
 gtts==2.5.4
-streamlit==1.45.1
+torch==2.1.0
+streamlit==1.32.0
 

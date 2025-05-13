@@ -1,9 +1,75 @@
 import streamlit as st
+from PIL import Image
 from gtts import gTTS
-import tempfile
-import os
+import io
+import base64
 
-# قاعدة الأسئلة والإجابات
+# ---------- إعداد الصفحة ----------
+st.set_page_config(page_title="Home of Innovation Chatbot", layout="centered")
+
+# ---------- خلفية مخصصة ----------
+def set_background(image_path):
+    with open(image_path, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode()
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: url("data:image/png;base64,{encoded_string}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+set_background("static/background.png")
+
+# ---------- خطوط وتنسيقات ----------
+st.markdown(
+    """
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+    html, body, [class*="css"]  {
+        font-family: 'Tajawal', sans-serif;
+        color: #000000;
+    }
+    .title-small {
+        font-size: 28px;
+        text-align: center;
+        color: #000;
+        margin-bottom: 10px;
+    }
+    .section-label {
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 25px;
+        margin-bottom: 5px;
+    }
+    .response-box {
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 10px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# ---------- شعار سابك ----------
+logo = Image.open("static/logo.png")
+st.image(logo, width=130)
+
+# ---------- العنوان ----------
+st.markdown("<div class='title-small'>Welcome to Home of Innovation Chatbot™</div>", unsafe_allow_html=True)
+
+# ---------- تحديد اللغة ----------
+lang = st.radio("Language / اللغة", ["en", "ar"])
+
+# ---------- قاعدة الأسئلة والإجابات ----------
 qa_pairs = {
     "en": {
         "what is home of innovation": "The Home of Innovation™ is a place and a program by SABIC to support Vision 2030.",
@@ -26,67 +92,22 @@ qa_pairs = {
     }
 }
 
-# دالة للرد
-from transformers import pipeline
-fallback_model = pipeline("text-generation", model="gpt2", framework="pt")
+# ---------- حقل السؤال ----------
+question = st.text_input("Ask a question / اطرح سؤالاً")
 
-def answer_question(user_input, lang, use_smart_reply=False):
-    user_input = user_input.lower().strip()
-    responses = qa_pairs.get(lang, {})
-    response = responses.get(user_input)
-
-    if not response and use_smart_reply:
-        prompt = user_input if lang == 'en' else "Translate to Arabic and answer: " + user_input
-        generated = fallback_model(prompt, max_length=50, num_return_sequences=1)[0]['generated_text']
-        response = generated.strip()
-    elif not response:
-        response = "Sorry, I don't have an answer for that yet." if lang == 'en' else "عذرًا، لا أملك إجابة لهذا السؤال حتى الآن."
-
-    tts = gTTS(text=response, lang='en' if lang == 'en' else 'ar')
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as fp:
-        tts.save(fp.name)
-        audio_path = fp.name
-
-    return response, audio_path
-
-# إعداد الصفحة
-st.set_page_config(page_title="Home of Innovation Chatbot", layout="centered")
-
-# الخلفية والتنسيق
-st.markdown(
-    """
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-    html, body, [class*="css"] {
-        font-family: 'Tajawal', sans-serif;
-        background: url('static/background.png') no-repeat center center fixed;
-        background-size: cover;
-    }
-    .response-box {
-        background-color: rgba(255,255,255,0.85);
-        padding: 1rem;
-        border-radius: 10px;
-        margin-top: 1rem;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-# عرض الشعار والعنوان
-st.image("static/logo.png", width=200)
-st.markdown("<h2 style='text-align:center; color:#005CB9;'>Welcome to Home of Innovation™ Chatbot</h2>", unsafe_allow_html=True)
-
-# عناصر الواجهة
-lang = st.radio("Language / اللغة", ["en", "ar"])
-user_input = st.text_input("Ask a question / اطرح سؤالًا")
-use_smart = st.checkbox("Use smart reply if no match found")
+# ---------- زر الإرسال ----------
 if st.button("Submit"):
-    if user_input:
-        response, audio_path = answer_question(user_input, lang, use_smart_reply=use_smart)
-        st.markdown(f"<div class='response-box'><b>Answer (Text):</b><br>{response}</div>", unsafe_allow_html=True)
-        st.markdown("<div class='response-box'><b>Answer (Audio):</b></div>", unsafe_allow_html=True)
-        st.audio(audio_path)
-        os.remove(audio_path)
-    else:
-        st.warning("Please enter a question.")
+    question_clean = question.strip().lower()
+    answer = qa_pairs.get(lang, {}).get(question_clean, "Sorry, I don't have an answer for that yet." if lang == "en" else "عذرًا، لا أملك إجابة على هذا السؤال حاليًا.")
+
+    # ---------- عرض الإجابة نصًا ----------
+    st.markdown("<div class='section-label'>Text Response / الجواب نصًا</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='response-box'>{answer}</div>", unsafe_allow_html=True)
+
+    # ---------- تحويل النص إلى صوت ----------
+    st.markdown("<div class='section-label'>Audio Response / الجواب صوتًا</div>", unsafe_allow_html=True)
+    tts = gTTS(answer, lang=lang)
+    audio_bytes = io.BytesIO()
+    tts.write_to_fp(audio_bytes)
+    audio_bytes.seek(0)
+    st.audio(audio_bytes, format="audio/mp3")

@@ -3,6 +3,47 @@ from gtts import gTTS
 import tempfile
 import os
 
+# إعداد الصفحة
+st.set_page_config(page_title="موطن الابتكار - سابك", layout="centered")
+
+# الخط وتنسيق CSS
+st.markdown(
+    """
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+    html, body, [class*="css"]  {
+        font-family: 'Tajawal', sans-serif;
+        background-image: url('static/background.png');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }
+    .main-container {
+        background-color: rgba(255, 255, 255, 0.88);
+        padding: 3rem;
+        border-radius: 20px;
+        text-align: center;
+        max-width: 750px;
+        margin: auto;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    h1 {
+        color: #005CB9;
+        font-weight: 700;
+        font-size: 2.5rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# الشعار
+st.markdown("<div class='main-container'>", unsafe_allow_html=True)
+st.image("static/logo.png", width=200)
+
+# العنوان
+st.markdown("<h1>مرحبًا بك في موطن الابتكار™</h1>", unsafe_allow_html=True)
+
 # الأسئلة والإجابات
 qa_pairs = {
     "en": {
@@ -28,58 +69,26 @@ def answer_question(user_input, lang):
     user_input = user_input.lower().strip()
     responses = qa_pairs.get(lang, {})
     response = responses.get(user_input, "Sorry, I don't have an answer for that yet." if lang == "en" else "عذرًا، لا أملك إجابة لهذا السؤال حتى الآن.")
-
     with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as fp:
         tts = gTTS(text=response, lang='en' if lang == 'en' else 'ar')
         tts.save(fp.name)
         audio_path = fp.name
-
     return response, audio_path
 
-# إعداد الواجهة
-st.set_page_config(page_title="موطن الابتكار - سابك", layout="centered")
-
-# تدرج ألوان الخلفية + تنسيق مخصص
-st.markdown(
-    """
-    <style>
-    .stApp {
-        background: linear-gradient(to bottom right, #005CB9, #F47C20);
-        color: white;
-        font-family: 'Arial', sans-serif;
-        text-align: center;
-    }
-    .custom-title {
-        color: #005CB9;
-        font-size: 2.5em;
-        font-weight: bold;
-        margin-bottom: 1rem;
-    }
-    .stTextInput>div>div>input {
-        text-align: center;
-    }
-    .stRadio>div>label {
-        display: flex;
-        justify-content: center;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-# عرض الشعار
-st.image("static/logo.png", width=160)
-
-# العنوان المخصص
-st.markdown("<div class='custom-title'>Welcome to Home of Innovation™ Chatbot</div>", unsafe_allow_html=True)
-
+# واجهة المستخدم
 lang = st.radio("Language / اللغة", ["en", "ar"])
 user_input = st.text_input("Ask a question / اطرح سؤالًا", "")
+
 if st.button("Submit"):
     if user_input:
         response, audio_path = answer_question(user_input, lang)
-        st.write(response)
-        st.audio(audio_path)
+        st.markdown(f"**{response}**")
+        st.audio(audio_path, format='audio/mp3')
+        # ملاحظة: Streamlit لا يدعم التشغيل التلقائي الكامل للصوت
+        # لكن الملف يتم عرضه مع إمكانية الضغط للتشغيل
         os.remove(audio_path)
     else:
         st.warning("Please enter a question.")
+
+st.markdown("</div>", unsafe_allow_html=True)
+

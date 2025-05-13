@@ -48,6 +48,7 @@ st.markdown('<div class="custom-title">Welcome to Home of Innovation Chatbot</di
 # اختيارات اللغة والسؤال
 lang = st.radio("Language / اللغة", ["en", "ar"])
 user_input = st.text_input("Ask a question / اطرح سؤالًا")
+st.image("static/background.png", caption="هل الخلفية تظهر هنا؟")
 
 # الأسئلة والإجابات
 qa_pairs = {

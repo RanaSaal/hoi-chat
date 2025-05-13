@@ -138,4 +138,13 @@ if st.button("Submit"):
     tts.write_to_fp(audio_bytes)
     audio_bytes.seek(0)
     st.audio(audio_bytes, format="audio/mp3")
+    
+    # زر تحميل الصوت (حل بديل في حال ما اشتغل)
+    st.download_button(
+        label="Download Audio / تحميل الصوت",
+        data=audio_bytes,
+        file_name="response.mp3",
+        mime="audio/mp3"
+    )
+
 

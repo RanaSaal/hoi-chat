@@ -43,7 +43,7 @@ st.markdown(
         margin-bottom: 10px;
     }
     .section-label {
-        font-size: 12px;
+        font-size: 14px;
         font-weight: bold;
         margin-top: 25px;
         margin-bottom: 5px;

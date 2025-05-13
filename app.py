@@ -62,6 +62,11 @@ st.markdown(
     .stTextInput label, .stRadio label {
         color: #000 !important;
     }
+
+    /* 🔥 هذا السطر يحل مشكلة لون النص المحدد في الراديو */
+    div[role="radiogroup"] > label > div {
+        color: #000 !important;
+    }
     </style>
     """,
     unsafe_allow_html=True
@@ -133,3 +138,4 @@ if st.button("Submit"):
     tts.write_to_fp(audio_bytes)
     audio_bytes.seek(0)
     st.audio(audio_bytes, format="audio/mp3")
+

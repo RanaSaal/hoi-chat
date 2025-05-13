@@ -33,19 +33,18 @@ st.markdown(
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
     html, body, [class*="css"]  {
-        font-family: 'Tajawal', sans-serif !important;
-        color: #000 !important;
+        font-family: 'Tajawal', sans-serif;
+        color: #000000;
     }
     .title-small {
         font-size: 28px;
         text-align: center;
-        color: #000 !important;
+        color: #000;
         margin-bottom: 10px;
     }
     .section-label {
         font-size: 14px;
         font-weight: bold;
-        color: #000 !important;
         margin-top: 25px;
         margin-bottom: 5px;
     }
@@ -54,8 +53,24 @@ st.markdown(
         border-radius: 12px;
         padding: 15px;
         margin-bottom: 10px;
+        color: #000;
+    }
+
+    /* تعيين لون النص للعناصر التفاعلية */
+    input, label, .st-bb, .st-c3, .st-ce, .st-bc, .st-c6 {
         color: #000 !important;
     }
+
+    /* تلوين نص داخل مربع الإدخال */
+    input[type="text"] {
+        color: #000 !important;
+    }
+
+    /* تلوين عناوين السؤال والراديو */
+    .stTextInput label, .stRadio label {
+        color: #000 !important;
+    }
+
     </style>
     """,
     unsafe_allow_html=True
@@ -63,12 +78,12 @@ st.markdown(
 
 # ---------- إخفاء الهيدر ----------
 hide_streamlit_style = """
-    <style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    </style>
-    """
+        <style>
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        header {visibility: hidden;}
+        </style>
+        """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # ---------- شعار سابك ----------
@@ -123,13 +138,4 @@ if st.button("Submit"):
     audio_bytes = io.BytesIO()
     tts.write_to_fp(audio_bytes)
     audio_bytes.seek(0)
-
     st.audio(audio_bytes, format="audio/mp3")
-
-    # زر تحميل الصوت (حل بديل في حال ما اشتغل)
-    st.download_button(
-        label="Download Audio / تحميل الصوت",
-        data=audio_bytes,
-        file_name="response.mp3",
-        mime="audio/mp3"
-    )

@@ -39,20 +39,28 @@ def answer_question(user_input, lang):
 # إعداد الواجهة
 st.set_page_config(page_title="موطن الابتكار - سابك", layout="centered")
 
-# تدرج ألوان الخلفية
+# تدرج ألوان الخلفية + تنسيق مخصص
 st.markdown(
     """
     <style>
-    body {
+    .stApp {
         background: linear-gradient(to bottom right, #005CB9, #F47C20);
         color: white;
         font-family: 'Arial', sans-serif;
+        text-align: center;
     }
-    .main {
-        background-color: rgba(255, 255, 255, 0.85);
-        padding: 2rem;
-        border-radius: 10px;
-        color: black;
+    .custom-title {
+        color: #005CB9;
+        font-size: 2.5em;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+    .stTextInput>div>div>input {
+        text-align: center;
+    }
+    .stRadio>div>label {
+        display: flex;
+        justify-content: center;
     }
     </style>
     """,
@@ -62,7 +70,8 @@ st.markdown(
 # عرض الشعار
 st.image("static/logo.png", width=160)
 
-st.title("مرحبًا بك في موطن الابتكار™")
+# العنوان المخصص
+st.markdown("<div class='custom-title'>Welcome to Home of Innovation™ Chatbot</div>", unsafe_allow_html=True)
 
 lang = st.radio("Language / اللغة", ["en", "ar"])
 user_input = st.text_input("Ask a question / اطرح سؤالًا", "")

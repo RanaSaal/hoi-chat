@@ -58,6 +58,15 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+# إخفاء الهيدر 
+hide_streamlit_style = """
+        <style>
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        header {visibility: hidden;}
+        </style>
+        """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # ---------- شعار سابك ----------
 logo = Image.open("static/logo.png")

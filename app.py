@@ -1,11 +1,13 @@
 import streamlit as st
 from PIL import Image
+from gtts import gTTS
+import io
 import base64
 
 # ---------- Page Config ----------
 st.set_page_config(page_title="Home of Innovation Chatbot", layout="centered")
 
-# ---------- Background with CSS ----------
+# ---------- Background CSS ----------
 def set_background(image_path):
     with open(image_path, "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read()).decode()
@@ -25,7 +27,7 @@ def set_background(image_path):
 
 set_background("static/background.png")
 
-# ---------- Custom Font ----------
+# ---------- Custom Font and Styles ----------
 st.markdown(
     """
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
@@ -34,6 +36,24 @@ st.markdown(
         font-family: 'Tajawal', sans-serif;
         color: #000000;
     }
+    .title-small {
+        font-size: 28px;
+        text-align: center;
+        color: #000;
+        margin-bottom: 10px;
+    }
+    .section-label {
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 25px;
+        margin-bottom: 5px;
+    }
+    .response-box {
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 10px;
+    }
     </style>
     """,
     unsafe_allow_html=True
@@ -41,13 +61,10 @@ st.markdown(
 
 # ---------- Logo ----------
 logo = Image.open("static/logo.png")
-st.image(logo, width=150)  # أكبر شوي
+st.image(logo, width=130)
 
 # ---------- Title ----------
-st.markdown(
-    "<h1 style='text-align: center; color: #000;'>Welcome to Home of Innovation Chatbot™</h1>",
-    unsafe_allow_html=True
-)
+st.markdown("<div class='title-small'>Welcome to Home of Innovation Chatbot™</div>", unsafe_allow_html=True)
 
 # ---------- Language Selection ----------
 lang = st.radio("Language / اللغة", ["en", "ar"])
@@ -60,14 +77,19 @@ if st.button("Submit"):
     # Temporary placeholder response
     if lang == "en":
         text_response = "The Home of Innovation™ is a place and a program by SABIC to support Vision 2030."
+        tts = gTTS(text_response, lang='en')
     else:
         text_response = "موطن الابتكار™ هو مكان ومبادرة من سابك لدعم رؤية 2030."
+        tts = gTTS(text_response, lang='ar')
 
     # ---------- Text Answer ----------
-    st.markdown("### Text Response / الجواب نصاً")
-    st.write(text_response)
+    st.markdown("<div class='section-label'>Text Response / الجواب نصًا</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='response-box'>{text_response}</div>", unsafe_allow_html=True)
 
-    # ---------- Audio Response ----------
-    st.markdown("### Audio Response / الجواب صوتاً")
-    audio_file = "output.mp3"  # تأكدي أن ملف الصوت يتم حفظه بهذا الاسم
-    st.audio(audio_file, format="audio/mp3", start_time=0)
+    # ---------- Audio Answer ----------
+    st.markdown("<div class='section-label'>Audio Response / الجواب صوتًا</div>", unsafe_allow_html=True)
+    audio_bytes = io.BytesIO()
+    tts.write_to_fp(audio_bytes)
+    audio_bytes.seek(0)
+    st.audio(audio_bytes, format="audio/mp3")
+

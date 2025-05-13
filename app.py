@@ -28,7 +28,7 @@ qa_pairs = {
 
 # دالة للرد
 from transformers import pipeline
-fallback_model = pipeline("text-generation", model="gpt2")  # نموذج بسيط كمثال
+fallback_model = pipeline("text-generation", model="gpt2", framework="pt")
 
 def answer_question(user_input, lang, use_smart_reply=False):
     user_input = user_input.lower().strip()
